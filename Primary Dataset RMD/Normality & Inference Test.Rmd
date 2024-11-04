@@ -1,0 +1,390 @@
+
+******************************************************
+
+Topik    | Project Responses      
+
+---------|----------             
+
+Grup     |  Nathan Vilbert & Fernando Yulius
+
+Kelas    |  C
+
+NIM      |  00000069903 & 00000070570
+
+
+******************************************************
+
+
+```{r pressure, echo=FALSE}
+
+responden <- readxl::read_excel("Response.xlsx")
+responden 
+
+```
+
+```{r, echo=TRUE, message=FALSE}
+
+
+#Uji Normalitas Variabel Data Primer Numerik
+stats::shapiro.test(responden$`Jumlah Pendapatan Per Bulan`)
+stats::shapiro.test(responden$`Pengeluaran Per Bulan`)
+stats::shapiro.test(responden$`Makan Dalam Sehari`)
+stats::shapiro.test(responden$`Olahraga Mingguan`)
+stats::shapiro.test(responden$`Nilai Kualitas Tidur`)
+stats::shapiro.test(responden$`Tingkat Kepuasan Uang Jajan`)
+
+
+#Visualisasi Dataset Primer
+hist(responden$`Jumlah Pendapatan Per Bulan`, main = "Distribusi Jumlah Pendapatan Mahasiswa Per Bulan", col = "Green")
+
+hist(responden$`Tingkat Kesehatan`, main = "Distribusi Tingkat Kesehatan Mahasiswa", col = "Cyan")
+
+barplot(table(responden$`Tempat Tinggal`), main = "Distribusi Tempat Tinggal Mahasiswa", col = "Purple")
+
+hist(responden$`Olahraga Mingguan`, main = "Distribusi Frekuensi Olahraga Mahasiswa", col = "Brown")
+
+barplot(table(responden$`Kemampuan Memenuhi Kebutuhan Gizi`), main = "Distribusi Kemampuan Memenuhi Kebutuhan Gizi Mahasiswa", col = "Grey")
+
+hist(responden$`Nilai Kualitas Tidur`, main = "Distribusi Nilai Kualitas Tidur Mahasiswa", col = "Blue")
+
+barplot(table(responden$`Uang Untuk Rokok`), main = "Distribusi Mahasiswa Merokok", col ="Black")
+
+barplot(table(responden$`Uang Untuk Alkohol`), main = "Distribusi Mahasiswa Minum Alkohol", col = "Orange")
+
+barplot(table(responden$`Kunjungan Dokter`), main = "Distribusi Kunjungan Mahasiswa Pada Dokter", col = "Pink")
+
+
+#Filter data pendapatan merokok & non-merokok serta alkohol & non-alkohol
+alkohol <- (responden$`Jumlah Pendapatan Per Bulan`[responden$`Uang Untuk Alkohol` == "Ya"] )
+nonalkohol <- (responden$`Jumlah Pendapatan Per Bulan`[responden$`Uang Untuk Alkohol` == "Tidak"] )
+
+rokok <- (responden$`Jumlah Pendapatan Per Bulan`[responden$`Uang Untuk Rokok` == "Ya"] )
+nonrokok <- (responden$`Jumlah Pendapatan Per Bulan`[responden$`Uang Untuk Rokok` == "Tidak"] )
+
+
+#Mean Variabel-variabel Numerik
+meanjp <- mean(responden$`Jumlah Pendapatan Per Bulan`)
+meanp <- mean(responden$`Pengeluaran Per Bulan`)
+meanmds <- mean(responden$`Makan Dalam Sehari`)
+meanom <- mean(responden$`Olahraga Mingguan`)
+meannkt <- mean(responden$`Nilai Kualitas Tidur`)
+meantk <- mean(responden$`Tingkat Kepuasan Uang Jajan`)
+
+#SD Variabel-variabel Numerik
+sdjp <- sd(responden$`Jumlah Pendapatan Per Bulan`)
+sdp <- sd(responden$`Pengeluaran Per Bulan`)
+sdmds <- sd(responden$`Makan Dalam Sehari`)
+sdom <- sd(responden$`Olahraga Mingguan`)
+sdnkt <- sd(responden$`Nilai Kualitas Tidur`)
+sdtk <- sd(responden$`Tingkat Kepuasan Uang Jajan`)
+
+#CV Variabel-variabel Numerik
+(cvjp <- (sdjp/meanjp) * 100)
+(cvp <- (sdp/meanp) * 100)
+(cvmds <- (sdmds/meanmds) * 100)
+(cvom <- (sdom/meanom) * 100)
+(cvnkt <- (sdnkt/meannkt) * 100)
+(cvtk <- (sdtk/meantk) * 100)
+
+#Visualisasi Normalisasi Data Density Plot
+par(mfrow = c(2,2))
+plot(density(responden$`Jumlah Pendapatan Per Bulan`), main = "Density Plot Pendapatan", xlab= "Pendapatan Per Bulan")
+plot(density(responden$`Pengeluaran Per Bulan`), main = "Density Plot Pengeluaran", xlab ="Pengeluaran Per Bulan")
+plot(density(responden$`Makan Dalam Sehari`), main = "Density Plot Frekuensi Makan", xlab = "Frekuensi Makan Per Hari")
+plot(density(responden$`Olahraga Mingguan`), main = "Density Plot Frekuensi Olahraga", xlab = "Frekuensi Olahraga Per Minggu")
+plot(density(responden$`Nilai Kualitas Tidur`), main = "Density Plot Kualitas Tidur", xlab = "Nilai Kualitas Tidur")
+plot(density(responden$`Tingkat Kepuasan Uang Jajan`), main = "Density Plot Kepuasan Mahasiswa Terhadap Uang Jajan", xlab = "Tingkat Kepuasan Mahasiswa Terhadap Uang Jajan")
+
+#Visualisasi Normalisasi Data Q-Q Plot
+par(mfrow = c(2,2))
+qqnorm(responden$`Jumlah Pendapatan Per Bulan`, main = "Q-Q Plot Pendapatan Per Bulan")
+qqline(responden$`Jumlah Pendapatan Per Bulan`)
+qqnorm(responden$`Pengeluaran Per Bulan`, main = "Q-Q Plot Pengeluaran Per Bulan")
+qqline(responden$`Pengeluaran Per Bulan`)
+qqnorm(responden$`Makan Dalam Sehari`, main = "Q-Q Plot Frekuensi Makan Per Hari")
+qqline(responden$`Makan Dalam Sehari`)
+qqnorm(responden$`Olahraga Mingguan`, main = "Q-Q Plot Frekuensi Olahraga Per Minggu")
+qqline(responden$`Olahraga Mingguan`)
+qqnorm(responden$`Nilai Kualitas Tidur`, main = "Q-Q Plot Nilai Kualitas Tidur")
+qqline(responden$`Nilai Kualitas Tidur`)
+qqnorm(responden$`Tingkat Kepuasan Uang Jajan`, main = "Q-Q Plot Tingkat Kepuasan Uang Jajan")
+qqline(responden$`Tingkat Kepuasan Uang Jajan`)
+
+
+#Inference Of a Mean
+#1
+pendapatankos <- (responden$`Jumlah Pendapatan Per Bulan`[responden$`Tempat Tinggal` == "Kost/apartemen"])
+pendapatanrumah <- (responden$`Jumlah Pendapatan Per Bulan`[responden$`Tempat Tinggal` == "Rumah Orang Tua"])
+
+alpha <- 0.05
+conflvl <- 1 - alpha
+var.test(pendapatankos, pendapatanrumah)
+t.test(pendapatankos, pendapatanrumah, alternative = "two.sided", conf.level = conflvl)
+
+#2
+kesehatankos <- (responden$`Tingkat Kesehatan`[responden$`Tempat Tinggal` == "Kost/apartemen"])
+kesehatanrumah <- (responden$`Tingkat Kesehatan`[responden$`Tempat Tinggal` == "Rumah Orang Tua"])
+                 
+alpha <- 0.05
+conflvl <- 1 - alpha
+var.test(kesehatankos, kesehatanrumah)
+t.test(kesehatankos, kesehatanrumah, alternative = "two.sided", conf.level = conflvl)
+
+#3
+cukupgizi <- (responden$`Jumlah Pendapatan Per Bulan`[responden$`Kemampuan Memenuhi Kebutuhan Gizi`== "Sudah cukup"])
+takcukupgizi <- (responden$`Jumlah Pendapatan Per Bulan`[responden$`Kemampuan Memenuhi Kebutuhan Gizi`== "Belum cukup"])
+
+alpha <- 0.05
+conflvl <- 1 - alpha
+var.test(cukupgizi, takcukupgizi)
+t.test(cukupgizi, takcukupgizi, alternative = "two.sided", conf.level = conflvl)
+
+#4
+alkohol <- (responden$`Jumlah Pendapatan Per Bulan`[responden$`Uang Untuk Alkohol` == "Ya"] )
+nonalkohol <- (responden$`Jumlah Pendapatan Per Bulan`[responden$`Uang Untuk Alkohol` == "Tidak"] )
+
+alpha <- 0.05
+conflvl <- 1 - alpha
+var.test(rokok, nonrokok)
+t.test(alkohol, nonalkohol, alternative = "great", conf.level = conflvl)
+
+#5
+gizikos <- (responden$`Kemampuan Memenuhi Kebutuhan Gizi`[responden$`Tempat Tinggal` == "Kost/apartemen"])
+gizirumah <- (responden$`Kemampuan Memenuhi Kebutuhan Gizi`[responden$`Tempat Tinggal` == "Rumah Orang Tua"])
+
+alpha <- 0.05
+conflvl <- 1 - alpha
+var.test(gizikos, gizirumah)
+t.test(gizikos, gizirumah, alternative = "less", conf.level = conflvl)
+
+
+```
+
+```{r, echo=TRUE, message=FALSE}
+
+#hipo1
+
+cor.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Tingkat Kesehatan`)
+
+
+chisq.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Tingkat Kesehatan`)
+
+
+kruskal.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Tingkat Kesehatan`)
+
+
+model <- lm(`Tingkat Kesehatan` ~ `Jumlah Pendapatan Per Bulan`, data = responden)
+
+summary(model)
+
+
+model <- lm(Tingkat_Kesehatan ~ Jumlah_Pendapatan_Per_Bulan, data = responden)
+
+
+plot(responden$`Jumlah Pendapatan Per Bulan`, responden$`Tingkat Kesehatan`,
+     xlab = "Jumlah Pendapatan Per Bulan",
+     ylab = "Tingkat Kesehatan",
+     main = "Hubungan antara Pendapatan dan Tingkat Kesehatan")
+abline(model, col = "red")
+
+model <- lm(`Tingkat Kesehatan` ~ `Jumlah Pendapatan Per Bulan`, data = responden)
+par(mfrow = c(2,2))
+plot(model)
+
+
+
+
+cor(responden$`Jumlah Pendapatan Per Bulan`, responden$`Tingkat Kesehatan`)
+
+sum <- lm(responden$`Jumlah Pendapatan Per Bulan` ~ responden$`Tingkat Kesehatan`)
+summary(sum)
+
+
+wilcox.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Tingkat Kesehatan`)
+```
+
+```{r, echo=TRUE, message=FALSE}
+
+#hipo2
+
+chisq.test(responden$`Tingkat Kesehatan`, responden$`Tempat Tinggal`)
+
+
+kruskal.test(responden$`Tingkat Kesehatan`, responden$`Tempat Tinggal`)
+
+
+boxplot(responden$`Tingkat Kesehatan` ~ responden$`Tempat Tinggal`, 
+        xlab = "Tempat Tinggal", ylab = "Tingkat Kesehatan",
+        main = "Distribusi Tingkat Kesehatan Mahasiswa Berdasarkan Tempat Tinggal")
+
+
+kesehatankos <- (responden$`Tingkat Kesehatan`[responden$`Tempat Tinggal` == "Kost/apartemen"])
+kesehatanrumah <- (responden$`Tingkat Kesehatan`[responden$`Tempat Tinggal` == "Rumah Orang Tua"])
+                 
+alpha <- 0.05
+conflvl <- 1 - alpha
+t.test(kesehatankos, kesehatanrumah, conf.level = conflvl, alternative = "two.sided")
+
+
+```
+
+
+```{r, echo=TRUE, message=FALSE}
+
+#hipo3
+
+chisq.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Uang Untuk Alkohol`)
+
+
+
+kruskal.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Uang Untuk Alkohol`)
+
+
+wilcox.test(responden$`Jumlah Pendapatan Per Bulan` ~ responden$`Uang Untuk Alkohol`,
+            data = responden)
+
+
+boxplot(responden$`Jumlah Pendapatan Per Bulan` ~ responden$`Uang Untuk Alkohol`, 
+        xlab = "Konsumsi Alkohol", ylab = "Pendapatan per Bulan",
+        main = "Distribusi Pendapatan Mahasiswa Berdasarkan Konsumsi Alkohol")
+
+
+
+numalkohol <- as.numeric(responden$`Uang Untuk Alkohol`)
+cor.test(responden$`Jumlah Pendapatan Per Bulan`, numalkohol)
+
+ 
+```
+```{r, echo=TRUE, message=FALSE}
+
+#hipo4
+
+chi
+factorkemampuan <- as.factor(responden$`Kemampuan Memenuhi Kebutuhan Gizi`)
+
+chisq.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Kemampuan Memenuhi Kebutuhan Gizi`)
+
+
+boxplot(responden$`Jumlah Pendapatan Per Bulan` ~ responden$`Kemampuan Memenuhi Kebutuhan Gizi`, 
+        xlab = "Pemenuhan Kebutuhan Gizi", ylab = "Pendapatan per Bulan",
+        main = "Distribusi Pendapatan per Bulan Berdasarkan Pemenuhan Gizi")
+
+
+kruskal.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Kemampuan Memenuhi Kebutuhan Gizi`)
+
+
+cukupgizi <- (responden$`Jumlah Pendapatan Per Bulan`[responden$`Kemampuan Memenuhi Kebutuhan Gizi`== "Sudah cukup"])
+takcukupgizi <- (responden$`Jumlah Pendapatan Per Bulan`[responden$`Kemampuan Memenuhi Kebutuhan Gizi`== "Belum cukup"])
+
+alpha <- 0.05
+conflvl <- 1-alpha
+t.test(cukupgizi, takcukupgizi, alternative = "two.sided", conf.level = conflvl)
+
+
+mkg <- as.numeric(responden$`Kemampuan Memenuhi Kebutuhan Gizi`)
+
+
+```
+```{r, echo=TRUE, message=FALSE}
+
+#hipo5
+
+chisq.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Olahraga Mingguan`)
+
+
+cor.test(responden$`Jumlah Pendapatan Per Bulan`,  responden$`Olahraga Mingguan`)
+
+
+kruskal.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Olahraga Mingguan`)
+
+
+boxplot(responden$`Jumlah Pendapatan Per Bulan` ~ responden$`Olahraga Mingguan`,
+        xlab = "Frekuensi Olahraga per Minggu", ylab = "Pendapatan per Bulan",
+        main = "Distribusi Pendapatan Mahasiswa Berdasarkan Frekuensi Olahraga")
+
+```
+```{r, echo=TRUE, message=FALSE}
+
+#hipo6
+
+chisq.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Nilai Kualitas Tidur`)
+
+
+cor.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Nilai Kualitas Tidur`)
+
+
+kruskal.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Nilai Kualitas Tidur`)
+
+ 
+boxplot(responden$`Jumlah Pendapatan Per Bulan` ~ responden$`Nilai Kualitas Tidur`,
+        xlab = "Nilai Kualitas Tidur", ylab = "Jumlah Pendapatan per Bulan", 
+        main = "Distribusi Nilai Kualitas Tidur Berdasarkan Pendapatan Mahasiswa")
+```
+
+```{r, echo=TRUE, message=FALSE}
+
+#hipo7
+
+chisq.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Kunjungan Dokter`)
+
+
+kruskal.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Kunjungan Dokter`)
+
+
+kunjung <- (responden$`Jumlah Pendapatan Per Bulan`[responden$`Kunjungan Dokter` != "Tidak Pernah"])
+nonkunjung <- (responden$`Jumlah Pendapatan Per Bulan`[responden$`Kunjungan Dokter` == "Tidak Pernah"])
+
+alpha <- 0.05
+conflvl <- 1-alpha
+t.test(kunjung, nonkunjung, conf.level = conflvl, alternative = "two.sided")
+
+boxplot(responden$`Jumlah Pendapatan Per Bulan` ~ responden$`Kunjungan Dokter`, 
+        xlab = "Frekuensi Kunjungan Dokter", ylab = "Pendapatan per Bulan",
+        main = "Distribusi Frekuensi Kunjungan Dokter Berdasarkan Pendapatan")
+
+ 
+```
+
+```{r, echo=TRUE, message=FALSE}
+
+#hipo8
+
+
+model <- lm(`Tingkat Kepuasan Uang Jajan` ~ `Jumlah Pendapatan Per Bulan`, data = responden)
+
+summary(model)
+
+plot( responden$`Tingkat Kepuasan Uang Jajan`,responden$`Jumlah Pendapatan Per Bulan`,
+     xlab = "Tingkat Kepuasan Uang Jajan",
+     ylab = "Jumlah Pendapatan Per Bulan", col = c("red","blue"),
+     main = "Hubungan antara Pendapatan dan Kepuasan Uang Jajan")
+abline(model, col = "red",)
+
+cor.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Tingkat Kepuasan Uang Jajan`)
+
+
+wilcox.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Tingkat Kepuasan Uang Jajan`)
+
+
+model <- lm(responden$`Jumlah Pendapatan Per Bulan` ~ responden$`Tingkat Kepuasan Uang Jajan`)
+par(mfrow = c(2,2))
+plot(model)
+
+
+lmtest::bptest(model)
+boxplot(responden$`Jumlah Pendapatan Per Bulan` ~ responden$`Tingkat Kepuasan Uang Jajan`)
+
+chisq.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Uang untuk Hiburan`)
+kruskal.test(responden$`Jumlah Pendapatan Per Bulan`, responden$`Uang untuk Hiburan`)
+ 
+```
+
+```{r, echo=TRUE, message=FALSE}
+
+#Uji Hipotesa
+
+
+
+```
+
+
