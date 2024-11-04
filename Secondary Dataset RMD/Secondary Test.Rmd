@@ -1,0 +1,141 @@
+---
+title: "Secondary Data"
+output: html_document
+---
+
+******************************************************
+
+Topik    | Project Responses      
+
+---------|----------             
+
+Grup     |  Nathan Vilbert & Fernando Yulius
+
+Kelas    |  C
+
+NIM      |  00000069903 & 00000070570
+
+
+******************************************************
+
+
+```{r pressure, echo=FALSE}
+
+
+library(dplyr)
+library(car)
+library(ggplot2)
+library(nortest)
+#install.packages("readcsv")
+library(lmtest)
+library(readxl)
+
+
+datas <- read.csv("Secondary Data.csv", header = TRUE, sep = ",")
+datas
+
+```
+
+```{r pressure, echo=FALSE}
+
+
+nonolahraga <- (datas$Money[datas$Athlete == "No"])
+olahraga <- (datas$Money[datas$Athlete == "Yes"])
+
+datas$Money
+datas$Nutrition
+datas$Athlete
+datas$NDHMeals
+
+
+#Visualisasi Dataset Sekunder
+hist(datas$Money, main = "Distribusi Pengeluaran Mahasiswa dalam Makanan", col = "Dark Green")
+
+hist(datas$Nutrition, main = "Distribusi Pemenuhan Gizi Mahasiswa Melalui Makanan", col = "Cyan")
+
+barplot(table(datas$Athlete), main = "Distribusi Mahasiswa yang Berolahraga", col = "Green")
+
+hist(datas$NDHMeals, main = "Distribusi Jumlah Membeli Makanan Di Luar Dalam Seminggu", col = "Blue")
+
+
+#H1 = Adanya hubungan antara keuangan mahasiswa dengan rutinitas pola makan
+chisq.test(datas$Money, datas$NDHMeals)
+cor.test(datas$Money, datas$NDHMeals)
+
+cor(datas$NDHMeals, datas$Nutrition)
+cor.test(datas$NDHMeals, datas$Nutrition)
+chisq.test(datas$NDHMeals, datas$Nutrition)
+#H0 diterima karena p-value diatas alpha 0.05
+
+
+#H2 = Adanya hubungan antara keuangan mahasiswa dengan kemampuan memenuhi kebutuhan nutrisi 
+
+chisq.test(datas$Money, datas$Nutrition)
+
+
+cor.test(datas$Money, datas$Nutrition)
+
+
+kruskal.test(datas$Money, datas$Nutrition)
+
+boxplot(datas$Money ~ datas$Nutrition, 
+        xlab = "Tingkat Nutrisi", ylab = "Money (USD Currency)"
+        ,main = "Distribusi Tingkat Nutrisi Berdasarkan Pendapatan")
+
+
+#Kesimpulan : H0 diterima karena p-value diatas alpha 0.05
+
+#H3 = Adanya hubungan antara keuangan mahasiswa terhadap rutinitas olahraga
+
+
+chisq.test(datas$Money, datas$Athlete)
+
+kruskal.test(datas$Money, datas$Athlete)
+
+boxplot(datas$Money ~ datas$Athlete, 
+        xlab = "Sering Berolahraga", ylab = "Money (USD Currency)",
+        main = "Distribusi Pendapatan Antara Mahasiswa yang Berolahraga dan Tidak")
+
+#Uji Normalitas Variabel Data Sekunder Numerik
+stats::shapiro.test(datas$Nutrition)
+stats::shapiro.test(datas$Money)
+stats::shapiro.test(datas$NDHMeals)
+
+#Visualisasi Normalitas Data
+qqplot(datas$Nutrition)
+qqplot(datas$NDHMeals)
+
+par(mfrow = c(2,2))
+plot(density(datas$Nutrition), main = "Density Plot Nutrisi", xlab = "Angka Nilai Nutrisi")
+plot(density(datas$NDHMeals), main = "Density Plot Jumlah Makan di Luar", xlab = "Frekuensi Makan di Luar dalam Seminggu")
+
+
+#Inference of Mean
+
+#1
+nonutrisi <- (datas$Money[datas$Nutrition == "0"])-
+nutrisi <- (datas$Money[datas$Nutrition != "0"])
+
+alpha <- 0.05
+conflvl <- 1 - alpha
+var.test(nutrisi, nonutrisi)
+t.test(nutrisi, nonutrisi, alternative = "two.sided", conf.level = conflvl)
+
+#2
+nonmeals <- (datas$Money[datas$NDHMeals == "0"])
+meals <- (datas$Money[datas$NDHMeals != "0"])
+
+alpha <- 0.05
+conflvl <- 1 - alpha
+var.test(nonmeals, meals)
+t.test(nonmeals, meals, alternative = "two.sided", conf.level = conflvl)
+
+#3
+nonolahraga <- (datas$Money[datas$Athlete == "No"])
+olahraga <- (datas$Money[datas$Athlete == "Yes"])
+
+alpha <- 0.05
+conflvl <- 1-alpha
+t.test(nonolahraga, olahraga, alt = "two.sided")
+
+```
