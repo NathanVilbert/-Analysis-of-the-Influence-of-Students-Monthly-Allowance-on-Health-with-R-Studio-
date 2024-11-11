@@ -15,6 +15,6 @@ In the Probability & Statistics course project titled "Analysis of the Impact of
 <H3 align="center">
   Tools Used<br><br>
   <a href=#>
-<img src="https://img.shields.io/badge/Made%20with-lightgrey?style=for-the-badge" alt="Made with"><img src="https://img.shields.io/badge/RStudio-latest-blue?style=for-the-badge&logo=r&logoColor=white" alt="RStudio">
+<img src="https://img.shields.io/badge/Made%20with-grey?style=for-the-badge" alt="Made with"><img src="https://img.shields.io/badge/RStudio-latest-blue?style=for-the-badge&logo=r&logoColor=white" alt="RStudio">
   </a>
 </H3>
